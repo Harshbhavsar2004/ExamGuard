@@ -33,7 +33,7 @@ const ExamsList = () => {
 
   const handleViewExam = (exam) => {
     // Redirect to the exam page
-    navigate(`/exam/${exam._id}`);
+    navigate(`/StartExam/${exam._id}`);
   };
 
   const handleShare = async (exam) => {
@@ -109,7 +109,7 @@ const ExamsList = () => {
                 <div className="text-center text-muted-foreground">
                   Good luck on your exam!
                 </div>
-                <Button size="lg" onClick={() => handleViewExam(exam)}>Start Exam</Button>
+                <Button size="lg" onClick={() => handleViewExam(exam)}>Enroll</Button>
                 <Button size="lg" variant="outline" onClick={() => handleShare(exam)}>Share</Button>
               </CardContent>
             </Card>

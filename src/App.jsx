@@ -16,6 +16,7 @@ import ExamPage from "./Pages/User/ExamPage";
 import Profile from "./components/component/ConformUser";
 import Result from "./Pages/User/Result";
 import AdminExamstudent from "./Pages/Admin/AdminExamsstudent";
+import StartExam from "./components/component/StartExam";
 
 function App() {
   const { logindata, setLoginData } = useContext(LoginContext);
@@ -24,28 +25,45 @@ function App() {
   const DashboardValid = async () => {
     let token = localStorage.getItem("usersdatatoken");
 
-    const res = await fetch("https://examination-center.onrender.com/validuser", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-    });
+    try {
+      const res = await fetch("https://examination-center.onrender.com/validuser", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.status === 401 || !data) {
-      console.log("user not valid");
-    } else {
-      console.log("user verify");
-      setLoginData(data);
-      console.log(data);
+      if (data.status === 401 || !data) {
+        console.log("user not valid");
+        return false;
+      } else {
+        console.log("user verify");
+        setLoginData(data);
+        console.log(data);
+        return true;
+      }
+    } catch (error) {
+      console.error("Error validating user:", error);
+      return false;
     }
   };
 
   useEffect(() => {
-    DashboardValid();
-    setData(true);
+    const fetchData = async () => {
+      const success = await DashboardValid();
+      if (!success) {
+        setTimeout(fetchData, 1000); // Retry after 1 second if fetching data fails
+      } else {
+        setData(true);
+      }
+    };
+
+    fetchData(); // Initial fetch
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setLoginData]);
 
   return (
@@ -87,6 +105,10 @@ function App() {
               element={<ProtectedRoute element={<UsersExams />} />}
             />
             <Route
+              path="/StartExam/:id"
+              element={<ProtectedRoute element={<StartExam />} />}
+            />
+            <Route
               path="/exam/:examId"
               element={<ProtectedRoute element={<ExamPage />} />}
             />
@@ -105,8 +127,8 @@ function App() {
           </Routes>
         </BrowserRouter>
       ) : (
-        <div className="flex justify-center items-center ali w-dvh h-dvh m-3 text-2xl">
-          Loading..
+        <div className="flex justify-center items-center w-full h-screen text-2xl">
+          Loading...
         </div>
       )}
     </>

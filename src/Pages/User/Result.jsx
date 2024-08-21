@@ -8,7 +8,6 @@ const Result = () => {
   const {logindata} = useContext(LoginContext)
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     if(!logindata){
         return
@@ -22,8 +21,8 @@ const Result = () => {
           throw new Error('Results not found');
         }
         const data = await response.json();
-        setResults([data]);
-        console.log(data) // Assuming the response is an array of results
+        console.log(data)
+        setResults(data);
       } catch (err) {
         setError(err.message);
       }

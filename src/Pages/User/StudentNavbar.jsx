@@ -120,26 +120,31 @@ const StudentNavbar = () => {
                                     alt="Profile-pic"
                                     className="rounded-full mb-5 w-40 h-40 object-cover border-4 border-black"
                                 />
-                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
-                                    <label htmlFor="name" className="text-right font-bold pr-4">First Name</label>
-                                    <span>{userData.fname}</span>
-                                </div>
-                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
-                                    <label htmlFor="name" className="text-right font-bold pr-4">Last Name</label>
-                                    <span>{userData.lname}</span>
-                                </div>
-                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
-                                    <label htmlFor="name" className="text-right font-bold pr-4">Email</label>
-                                    <span>{userData.email}</span>
-                                </div>
-                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
-                                    <label htmlFor="name" className="text-right font-bold pr-4">Course</label>
-                                    <span>{userData.course}</span>
-                                </div>
-                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
-                                    <label htmlFor="name" className="text-right font-bold pr-4">Phone no</label>
-                                    <span>{userData.phone}</span>
-                                </div>
+                                <div className="w-[350px] p-6 bg-white shadow-md rounded-lg">
+  <div className="grid grid-cols-1 gap-4">
+    <div className="flex items-center justify-between">
+      <label htmlFor="fname" className="text-lg font-medium">First Name</label>
+      <span className="text-gray-700">{userData.fname}</span>
+    </div>
+    <div className="flex items-center justify-between">
+      <label htmlFor="lname" className="text-lg font-medium">Last Name</label>
+      <span className="text-gray-700">{userData.lname}</span>
+    </div>
+    <div className="flex items-center justify-between">
+      <label htmlFor="email" className="text-lg font-medium">Email</label>
+      <span className="text-gray-700">{userData.email}</span>
+    </div>
+    <div className="flex items-center justify-between">
+      <label htmlFor="course" className="text-lg font-medium">Course</label>
+      <span className="text-gray-700">{userData.course}</span>
+    </div>
+    <div className="flex items-center justify-between">
+      <label htmlFor="phone" className="text-lg font-medium">Phone no</label>
+      <span className="text-gray-700">{userData.phone}</span>
+    </div>
+  </div>
+</div>
+
                             </>
                         ) : (
                             <p>Loading profile data...</p>

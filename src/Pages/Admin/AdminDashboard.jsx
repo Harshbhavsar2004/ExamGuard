@@ -47,7 +47,7 @@ export default function AdminDashboard() {
         const now = new Date();
         const upcoming = exams.filter(exam => new Date(exam.date) > now);
         const lastExam = exams[exams.length - 1];
-
+        
         setUpcomingExams(upcoming);
         setExamsCount(exams.length);
         setUserCreatedExam(lastExam);

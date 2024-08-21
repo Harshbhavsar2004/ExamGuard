@@ -1,23 +1,20 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react"; // For back arrow icon
 import { Toaster, toast } from "react-hot-toast";
-import { LoginContext } from "@/components/Context/Context";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
       const response = await fetch(`https://examination-center.onrender.com/login`, {
@@ -33,10 +30,10 @@ export default function Login() {
       if (response.ok) {
         localStorage.setItem("usersdatatoken", data.result.token);
         // Navigate based on user role
-        if (data.result.user.role === 'user') {
+        if (data.result.user.role === "user") {
           toast.success("Login successful");
           navigate("/user-dashboard");
-        } else if (data.result.user.role === 'admin') {
+        } else if (data.result.user.role === "admin") {
           toast.success("Login successful");
           navigate("/admin-dashboard");
         } else {
@@ -62,7 +59,7 @@ export default function Login() {
           Back
         </Button>
       </div>
-      <div className="w-1/2 flex flex-col items-center justify-center bg-background p-8">
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-background p-8">
         <div className="mx-4 w-full max-w-md space-y-4 rounded-lg border border-input bg-card p-8 shadow-lg sm:mx-0">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold">Welcome Back</h1>
@@ -95,7 +92,6 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            {error && <p className="text-red-500">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Signing In..." : "Sign In"}
             </Button>
@@ -109,9 +105,10 @@ export default function Login() {
         </div>
       </div>
       <div
-        className="w-1/2 bg-cover bg-center"
+        className="hidden md:block w-1/2 bg-cover bg-center"
         style={{
-          backgroundImage: "url('https://plus.unsplash.com/premium_photo-1675018587770-b40d4a0d59e0?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+          backgroundImage:
+            "url('https://plus.unsplash.com/premium_photo-1675018587770-b40d4a0d59e0?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
         }}
       />
     </div>

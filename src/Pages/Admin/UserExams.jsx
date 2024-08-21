@@ -9,7 +9,8 @@ export default function ExamList() {
   const [selectedExam, setSelectedExam] = useState(null);
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('usersdatatoken'); // Retrieve the token from localStorage
-  const {logindata} = useContext(LoginContext)
+  const { logindata } = useContext(LoginContext);
+
   useEffect(() => {
     async function fetchExams() {
       try {
@@ -49,6 +50,37 @@ export default function ExamList() {
   function handleBackToList() {
     setSelectedExam(null);
   }
+
+
+  const handleDeleteExam = async (title) => {
+    try {
+      if (!logindata) {
+        console.error('No login data available');
+        return;
+      }
+
+      const response = await fetch(`https://examination-center.onrender.com/exams`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, email: logindata.email }), // Include email in the request body
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete the exam');
+      }
+
+      const data = await response.json();
+      console.log(data.message); // Handle success message
+
+      // Update state to reflect the deletion
+      setExams(prevExams => prevExams.filter(exam => exam.title !== title));
+    } catch (error) {
+      console.error('Error deleting exam:', error);
+    }
+  };
 
   if (selectedExam) {
     return (
@@ -108,14 +140,16 @@ export default function ExamList() {
   }
 
   if (exams.length === 0) {
-    return <div className='flex items-centerc justify-center'>
-      <Navbar/>
-      <p className=''>No exams found.</p>;
-    </div>
+    return (
+      <div className='flex items-center justify-center'>
+        <Navbar />
+        <p>No exams found.</p>
+      </div>
+    );
   }
 
   return (
-<div className="flex">
+    <div className="flex">
       <Navbar className="flex-none w-64" />
       <div className="ml-60 main-content flex-1 p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -143,8 +177,9 @@ export default function ExamList() {
                   <div className="font-medium">{exam.endTime}</div>
                 </div>
               </CardContent>
-              <CardFooter className="flex justify-end">
+              <CardFooter className="flex justify-end space-x-2">
                 <Button onClick={() => handleViewExam(exam)}>View Exam</Button>
+                <Button variant="ghost" onClick={() => handleDeleteExam(exam.title)}>Delete Exam</Button>
               </CardFooter>
             </Card>
           ))}
