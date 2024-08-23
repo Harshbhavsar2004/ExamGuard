@@ -115,10 +115,6 @@ const AppRoutes = () => {
             path="/adminExamsDetails"
             element={<ProtectedRoute element={<AdminExamstudent />} />}
           />
-          <Route
-            path="/admin-setting"
-            element={<ProtectedRoute element={<AdminSetting />} />}
-          />
         </Routes>
       ) : (
         <div

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from './Navbar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Toaster, toast } from "react-hot-toast";
-
+import { SyncLoader } from "react-spinners";
 export default function AdminSetting() {
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
