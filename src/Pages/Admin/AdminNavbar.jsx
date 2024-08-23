@@ -13,17 +13,17 @@ import {
     Sheet,
     SheetContent,
     SheetHeader,
-    SheetFooter,
     SheetTitle,
     SheetDescription,
-    SheetClose,
 } from '@/components/ui/sheet';
-
+import { ModeToggle } from '../User/ModeToggle'; // Import the ModeToggle component
+import { SyncLoader } from 'react-spinners';
 const AdminNavbar = () => {
     const [userData, setUserData] = useState(null);
     const [hasToken, setHasToken] = useState(false);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    
     const fetchUserData = async () => {
         const token = localStorage.getItem("usersdatatoken");
 
@@ -63,7 +63,8 @@ const AdminNavbar = () => {
         setUserData(null);
         setHasToken(false);
         navigate("/");
-      };
+    };
+    
     const handleSheetOpen = () => setIsSheetOpen(true);
     const handleSheetClose = () => setIsSheetOpen(false);
 
@@ -73,40 +74,43 @@ const AdminNavbar = () => {
                 <Link to="#" className="flex items-center gap-2">
                     <span className="text-lg font-semibold">Exam Tracker</span>
                 </Link>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="rounded-full">
-                            {
-                              userData ?
-                              <img
-                                src={userData.photo}
-                                width={32}
-                                height={32}
-                                className="rounded-full"
-                                alt="Avatar"
-                                style={{ aspectRatio: "32/32", objectFit: "cover" }}
-                            /> :
-                            null
-                            }
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {userData ? (
-                            <>
-                               <DropdownMenuLabel>Signed in as Admin</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleSheetOpen}>
-                                    Profile
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>Settings</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-                            </>
-                        ) : (
-                            <DropdownMenuLabel>Loading...</DropdownMenuLabel>
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center gap-4">
+                    <ModeToggle /> {/* Add the ModeToggle component here */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="rounded-full">
+                                {
+                                  userData ?
+                                  <img
+                                    src={userData.photo}
+                                    width={32}
+                                    height={32}
+                                    className="rounded-full"
+                                    alt="Avatar"
+                                    style={{ aspectRatio: "32/32", objectFit: "cover" }}
+                                /> :
+                                null
+                                }
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {userData ? (
+                                <>
+                                   <DropdownMenuLabel>Signed in as Admin</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleSheetOpen}>
+                                        Profile
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                                </>
+                            ) : (
+                                <DropdownMenuLabel><SyncLoader /></DropdownMenuLabel>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </header>
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetContent>

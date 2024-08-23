@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import FaceDetection from '@/components/component/FaceDetection';
 import { LoginContext } from '@/components/Context/Context';
-
+import CameraVoiceAccessDialog from './Media.jsx';
+import { SyncLoader } from 'react-spinners';
 const ExamPage = () => {
     const { examId } = useParams();
     const [exam, setExam] = useState(null);
@@ -18,8 +19,9 @@ const ExamPage = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
-    const {logindata} = useContext(LoginContext);
+    const { logindata } = useContext(LoginContext);
     const [run, setRun] = useState(true);
+
     useEffect(() => {
         const fetchExam = async () => {
             try {
@@ -58,37 +60,34 @@ const ExamPage = () => {
     };
 
     const handleSubmitAndClose = async () => {
-        setSubmitting(true); // Set loading to true when the submit process starts
-    
+        setSubmitting(true);
+
         let score = 0;
-    
+
         exam.questions.forEach((question, index) => {
             if (selectedAnswers[index] !== undefined && question.options[question.correctAnswer] === question.options[selectedAnswers[index]]) {
                 score++;
             }
         });
-    
-        const token = localStorage.getItem('usersdatatoken'); 
-    
+
+        const token = localStorage.getItem('usersdatatoken');
+
         try {
-            // Add user data to the exam
             const addUserResponse = await fetch(`https://examination-center.onrender.com/exams/${examId}/add-user`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ name: logindata.ValidUserOne.email , score: score }) // Replace 'Your Name' with the actual user's name
+                body: JSON.stringify({ name: logindata.ValidUserOne.email, score: score })
             });
-    
+
             if (!addUserResponse.ok) {
                 throw new Error('Failed to add user data');
             }
-    
+
             const addUserData = await addUserResponse.json();
-            console.log('User data added:', addUserData);
-    
-            // Submit the exam
+
             const submitResponse = await fetch(`https://examination-center.onrender.com/submit`, {
                 method: 'POST',
                 headers: {
@@ -97,32 +96,43 @@ const ExamPage = () => {
                 },
                 body: JSON.stringify({ submit: true })
             });
-    
+
             if (submitResponse.ok) {
                 console.log('Exam submitted successfully');
-                navigate('/user-dashboard'); // Navigate to the dashboard after successful submission
+                navigate('/user-dashboard');
             } else {
                 throw new Error('Error submitting the exam');
             }
         } catch (error) {
             console.error('Error during submission:', error);
         } finally {
-            setSubmitting(false); // Reset loading state once the process is done
+            setSubmitting(false);
         }
     };
-    
-    
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
     if (error) return <div>Error: {error}</div>;
+
+    // Calculate progress percentage based on answered questions
+    const answeredQuestionsCount = selectedAnswers.filter(answer => answer !== undefined).length;
+    const progress = Math.round((answeredQuestionsCount / exam.questions.length) * 100);
 
     return (
         <div className="layout-container">
             <div className="questions-section">
+                <CameraVoiceAccessDialog/>
                 {userVerified ? (
                     <div className="h-screen">
-                        <h1 className="text-3xl m-10 font-bold">{exam.title}</h1>
-                        <Card className="w-11/12 p-10 mx-auto">
+                        <div className='w-full bg-black h-20 text-white flex justify-between items-center p-4'>
+                            <h1 className="text-3xl font-bold">{exam.title}</h1>
+                            <div className="w-1/3 flex justify-center items-center">
+                                <div className="relative w-60 bg-gray-300 h-4 rounded-full overflow-hidden">
+                                    <div className="h-full bg-green-500" style={{ width: `${progress}%` }}></div>
+                                </div>
+                                <p className="text-white text-center ml-3">{progress}% Completed</p>
+                            </div>
+                        </div>
+                        <Card className="w-full max-h-full p-10 mx-auto">
                             <CardContent>
                                 <div className="flex">
                                     <div className="flex-1 mr-6">
@@ -174,7 +184,7 @@ const ExamPage = () => {
                                         )}
                                     </div>
                                     <div className="w-1/3">
-                                    <FaceDetection run={run} setRun={setRun} />
+                                        <FaceDetection run={run} setRun={setRun} />
                                     </div>
                                 </div>
                             </CardContent>

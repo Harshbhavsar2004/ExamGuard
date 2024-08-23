@@ -18,12 +18,16 @@ import {
     SheetDescription,
     SheetClose,
 } from '@/components/ui/sheet';
-
+import { ModeToggle } from './ModeToggle';
+import { SyncLoader } from 'react-spinners';
+import { Card } from '@/components/ui/card';
 const StudentNavbar = () => {
     const [userData, setUserData] = useState(null);
     const [hasToken, setHasToken] = useState(false);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+
     const fetchUserData = async () => {
         const token = localStorage.getItem("usersdatatoken");
 
@@ -63,7 +67,8 @@ const StudentNavbar = () => {
         setUserData(null);
         setHasToken(false);
         navigate("/");
-      };
+    };
+
     const handleSheetOpen = () => setIsSheetOpen(true);
     const handleSheetClose = () => setIsSheetOpen(false);
 
@@ -73,36 +78,39 @@ const StudentNavbar = () => {
                 <Link to="#" className="flex items-center gap-2">
                     <span className="text-lg font-semibold">Exam Tracker</span>
                 </Link>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="rounded-full">
-                            <img
-                                src="https://plus.unsplash.com/premium_photo-1677094310956-7f88ae5f5c6b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                                width={32}
-                                height={32}
-                                className="rounded-full"
-                                alt="Avatar"
-                                style={{ aspectRatio: "32/32", objectFit: "cover" }}
-                            />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {userData ? (
-                            <>
-                                <DropdownMenuLabel>{userData.fname} {userData.lname}</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleSheetOpen}>
-                                    Profile
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>Settings</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-                            </>
-                        ) : (
-                            <DropdownMenuLabel>Loading...</DropdownMenuLabel>
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center gap-4">
+                    <ModeToggle /> {/* Add ModeToggle here */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="rounded-full">
+                                <img
+                                    src="https://plus.unsplash.com/premium_photo-1677094310956-7f88ae5f5c6b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                    width={32}
+                                    height={32}
+                                    className="rounded-full"
+                                    alt="Avatar"
+                                    style={{ aspectRatio: "32/32", objectFit: "cover" }}
+                                />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {userData ? (
+                                <>
+                                    <DropdownMenuLabel>{userData.fname} {userData.lname}</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleSheetOpen}>
+                                        Profile
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                                </>
+                            ) : (
+                                <DropdownMenuLabel><SyncLoader /></DropdownMenuLabel>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </header>
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetContent>
@@ -112,7 +120,8 @@ const StudentNavbar = () => {
                             Make changes to your profile here. Click save when you're done.
                         </SheetDescription>
                     </SheetHeader>
-                    <div className="grid gap-4 py-4 place-items-center">
+                  <Card className="mt-10">
+                  <div className="grid gap-4 py-4 place-items-center">
                         {userData ? (
                             <>
                                 <img
@@ -120,36 +129,32 @@ const StudentNavbar = () => {
                                     alt="Profile-pic"
                                     className="rounded-full mb-5 w-40 h-40 object-cover border-4 border-black"
                                 />
-                                <div className="w-[350px] p-6 bg-white shadow-md rounded-lg">
-  <div className="grid grid-cols-1 gap-4">
-    <div className="flex items-center justify-between">
-      <label htmlFor="fname" className="text-lg font-medium">First Name</label>
-      <span className="text-gray-700">{userData.fname}</span>
-    </div>
-    <div className="flex items-center justify-between">
-      <label htmlFor="lname" className="text-lg font-medium">Last Name</label>
-      <span className="text-gray-700">{userData.lname}</span>
-    </div>
-    <div className="flex items-center justify-between">
-      <label htmlFor="email" className="text-lg font-medium">Email</label>
-      <span className="text-gray-700">{userData.email}</span>
-    </div>
-    <div className="flex items-center justify-between">
-      <label htmlFor="course" className="text-lg font-medium">Course</label>
-      <span className="text-gray-700">{userData.course}</span>
-    </div>
-    <div className="flex items-center justify-between">
-      <label htmlFor="phone" className="text-lg font-medium">Phone no</label>
-      <span className="text-gray-700">{userData.phone}</span>
-    </div>
-  </div>
-</div>
-
+                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
+                                    <label htmlFor="name" className="text-right font-bold pr-4">First Name</label>
+                                    <span>{userData.fname}</span>
+                                </div>
+                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
+                                    <label htmlFor="name" className="text-right font-bold pr-4">Last Name</label>
+                                    <span>{userData.lname}</span>
+                                </div>
+                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
+                                    <label htmlFor="name" className="text-right font-bold pr-4">Email</label>
+                                    <span>{userData.email}</span>
+                                </div>
+                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
+                                    <label htmlFor="name" className="text-right font-bold pr-4">Course</label>
+                                    <span>{userData.course}</span>
+                                </div>
+                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
+                                    <label htmlFor="name" className="text-right font-bold pr-4">Phone no</label>
+                                    <span>{userData.phone}</span>
+                                </div>
                             </>
                         ) : (
                             <p>Loading profile data...</p>
                         )}
                     </div>
+                  </Card>
                 </SheetContent>
             </Sheet>
         </div>

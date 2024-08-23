@@ -147,7 +147,7 @@ const Profile = ({ onVerification }) => {
 <div className="flex flex-col items-center p-4 bg-gray-100 min-h-screen">
   <Toaster position="top-center" reverseOrder={false} />
   
-  <h2 className="text-2xl font-bold mb-4 text-center">Capture Your Image</h2>
+  <h2 className="text-2xl font-bold mb-4 text-black text-center">Capture Your Image</h2>
 
   <p className={`font-bold mb-4 ${matchStatus && matchStatus.includes("not") ? "text-red-600" : "text-green-600"}`}>
     {matchStatus}

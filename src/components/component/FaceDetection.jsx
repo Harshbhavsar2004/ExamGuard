@@ -131,6 +131,7 @@ const FaceDetection = ({ run , setRun }) => {
         });
       } catch (error) {
         console.error('Error sending left count to backend:', error);
+        console.log(error)
       }
     }
 

@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { LoginContext } from '@/components/Context/Context';
-import Navbar from '@/components/component/Navbar';
-
+import Navbar from './Navbar';
+import { SyncLoader } from 'react-spinners';
 export default function AdminExamstudent() {
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,7 +36,7 @@ export default function AdminExamstudent() {
         fetchExams();
     }, [logindata]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
     if (error) return <p>Error: {error}</p>;
 
     return (

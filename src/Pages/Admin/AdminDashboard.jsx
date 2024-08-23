@@ -8,11 +8,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import Navbar from "@/components/component/Navbar";
+import Navbar from './Navbar';
 import AdminNavbar from './AdminNavbar';
 import { useNavigate } from 'react-router-dom';
 import { LoginContext } from '@/components/Context/Context';
-
+import { SyncLoader } from 'react-spinners';
 export default function AdminDashboard() {
   const { logindata } = useContext(LoginContext); // Use the context to get logindata
   const [examsCount, setExamsCount] = useState(0);
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
   }, [token, logindata]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading state while fetching
+    return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>; // Show loading state while fetching
   }
 
   const handleDeleteExam = async (title) => {
@@ -87,8 +87,7 @@ export default function AdminDashboard() {
         throw new Error('Failed to delete the exam');
       }
 
-      const data = await response.json();
-      console.log(data.message); // Handle success message
+      const data = await response.json(); // Handle success message
 
       // Update state to reflect the deletion
       setUpcomingExams(prevExams => prevExams.filter(exam => exam.title !== title));
@@ -180,8 +179,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-xl font-bold">{userCreatedExam.name}</div>
-                <div className="text-md">{userCreatedExam.date}</div>
-                <div className="text-sm">Students: {userCreatedExam.students}</div>
+                <div className="text-md">{new Date(userCreatedExam.date).toLocaleDateString()}</div>
               </CardContent>
             </Card>
           </div>

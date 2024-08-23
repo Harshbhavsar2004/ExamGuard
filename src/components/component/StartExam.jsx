@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useParams, useNavigate } from "react-router-dom";
-
+import { SyncLoader } from "react-spinners";
 export default function StartExam() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -77,7 +77,7 @@ export default function StartExam() {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
   }
 
   if (error) {
@@ -97,7 +97,7 @@ export default function StartExam() {
               {remainingTime || 'Calculating remaining time...'}
             </div>
             <Button
-              className="bg-primary-foreground text-primary"
+            variant="secondary"
               disabled={isButtonDisabled}
               onClick={handleButtonClick}
             >

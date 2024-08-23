@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-
+import { SyncLoader } from "react-spinners";
 function ProtectedRoute({ element }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
@@ -20,7 +20,7 @@ function ProtectedRoute({ element }) {
 
   if (isAuthenticated === null) {
     // While checking authentication, you can show a loading spinner or message
-    return <div>Loading...</div>;
+    return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
   }
 
   if (!isAuthenticated) {

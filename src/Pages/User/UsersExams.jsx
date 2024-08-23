@@ -5,7 +5,7 @@ import StudentNavbar from './StudentNavbar';
 import UserNavbar from './UserNavbar';
 import { Separator } from '@/components/ui/separator';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-
+import { SyncLoader } from 'react-spinners';
 const ExamsList = () => {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ const ExamsList = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
   if (error) return <div>Error: {error}</div>;
 
   const calculateDuration = (startTime, endTime) => {

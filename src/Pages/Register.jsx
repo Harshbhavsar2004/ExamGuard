@@ -54,7 +54,6 @@ export default function Register() {
         setTimeout(()=>{
             navigate('/login')
         },2000)
-        console.log(data);
       } else {
         toast.error(`Error: ${data.error}`);
       }

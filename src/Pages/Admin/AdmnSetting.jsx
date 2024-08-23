@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Navbar from "@/components/component/Navbar";
+import Navbar from './Navbar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Toaster, toast } from "react-hot-toast";
 
@@ -30,7 +30,6 @@ export default function AdminSetting() {
   }, []);
 
   const handleCheckActivity = (user) => {
-    console.log(user)
     setSelectedUser(user);
     setShowActivityModal(true);
   };
@@ -81,7 +80,7 @@ export default function AdminSetting() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
 
   const tableRows = users.map((user, index) => (
     <tr key={index} className="border-b">

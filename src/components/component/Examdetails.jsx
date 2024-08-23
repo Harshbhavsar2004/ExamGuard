@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { toast, Toaster } from 'react-hot-toast';
-import Navbar from './Navbar';
+import Navbar from '../../Pages/Admin/Navbar';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI("AIzaSyAVQFc-U4OBlAC7LVw7OMbedlCHnpx0uwk");
@@ -22,6 +22,7 @@ const AddQuestions = () => {
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [prompt, setPrompt] = useState('');
+  const [numQuestions, setNumQuestions] = useState(5); // New state for number of questions
 
   const addQuestion = () => {
     setQuestions([
@@ -35,11 +36,9 @@ const AddQuestions = () => {
     setCurrentQuestion(questions.length);
   };
 
-
   const navigateToQuestion = (index) => {
     setCurrentQuestion(index);
   };
-
 
   const handleSaveQuestions = async () => {
     try {
@@ -70,7 +69,7 @@ const AddQuestions = () => {
 
   const handleGenerateQuestions = async () => {
     try {
-      const fullPrompt = `Generate 5 questions on the following topic, each with 4 options and indicate the correct option index. Provide the response in JSON format, give only array no other things:
+      const fullPrompt = `Generate ${numQuestions} questions on the following topic, each with 4 options and indicate the correct option index. Provide the response in JSON format, give only array no other things:
       Topic: ${prompt}
       The output should be a JSON array where each object has the following fields:
       - title: The question title
@@ -202,7 +201,6 @@ const AddQuestions = () => {
                   ))}
                 </SelectContent>
               </Select>
-
             </div>
             <div className="flex justify-between items-center">
               {currentQuestion > 0 && (
@@ -238,13 +236,25 @@ const AddQuestions = () => {
               onChange={(e) => setPrompt(e.target.value)}
               className="w-full mb-4"
             />
-            <Button onClick={handleGenerateQuestions}>Generate Questions</Button>
+            <Label htmlFor="num-questions">Number of Questions</Label>
+            <Input
+              id="num-questions"
+              type="number"
+              min="1"
+              value={numQuestions}
+              onChange={(e) => setNumQuestions(parseInt(e.target.value))}
+              className="w-full mb-4"
+            />
+            <Button onClick={handleGenerateQuestions} className="w-full">Generate Questions</Button>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+export default AddQuestions;
+
 
 function PlusIcon(props) {
   return (
@@ -265,5 +275,3 @@ function PlusIcon(props) {
     </svg>
   );
 }
-
-export default AddQuestions;

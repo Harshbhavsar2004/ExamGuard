@@ -1,4 +1,4 @@
-import Navbar from '@/components/component/Navbar';
+import Navbar from './Navbar';
 import React, { useContext, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';

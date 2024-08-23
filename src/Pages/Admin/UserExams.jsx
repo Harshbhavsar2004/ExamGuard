@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Navbar from '@/components/component/Navbar';
+import Navbar from './Navbar';
 import { LoginContext } from '@/components/Context/Context';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 export default function ExamList() {
   const [exams, setExams] = useState([]);
@@ -10,6 +11,7 @@ export default function ExamList() {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('usersdatatoken'); // Retrieve the token from localStorage
   const { logindata } = useContext(LoginContext);
+  const router = useNavigate(); // Initialize the router
 
   useEffect(() => {
     async function fetchExams() {
@@ -31,7 +33,7 @@ export default function ExamList() {
           throw new Error('Network response was not ok');
         }
   
-        const data = await response.json();
+        const data = await response.json();        
         setExams(data.exams);
       } catch (error) {
         console.error('Error fetching exam details:', error);
@@ -50,7 +52,6 @@ export default function ExamList() {
   function handleBackToList() {
     setSelectedExam(null);
   }
-
 
   const handleDeleteExam = async (title) => {
     try {
@@ -73,14 +74,16 @@ export default function ExamList() {
       }
 
       const data = await response.json();
-      console.log(data.message); // Handle success message
-
-      // Update state to reflect the deletion
       setExams(prevExams => prevExams.filter(exam => exam.title !== title));
     } catch (error) {
       console.error('Error deleting exam:', error);
     }
   };
+
+  // Function to handle edit button click
+  function handleEditExam(id) {
+    router(`/exams/${id}`); // Redirect to the edit page with the exam ID
+  }
 
   if (selectedExam) {
     return (
@@ -179,7 +182,8 @@ export default function ExamList() {
               </CardContent>
               <CardFooter className="flex justify-end space-x-2">
                 <Button onClick={() => handleViewExam(exam)}>View Exam</Button>
-                <Button variant="ghost" onClick={() => handleDeleteExam(exam.title)}>Delete Exam</Button>
+                <Button variant="outline" onClick={() => handleDeleteExam(exam.title)}>Delete Exam</Button>
+                <Button variant="outline" onClick={() => handleEditExam(exam._id)}>Edit</Button> {/* Add Edit Button */}
               </CardFooter>
             </Card>
           ))}
