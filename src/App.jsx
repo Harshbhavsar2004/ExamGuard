@@ -126,11 +126,8 @@ function App() {
             />
           </Routes>
         </BrowserRouter>
-      ) : (
-        <div className="flex justify-center items-center w-full h-screen text-2xl">
-          Loading...
-        </div>
-      )}
+      ) : null
+      }
     </>
   );
 }
