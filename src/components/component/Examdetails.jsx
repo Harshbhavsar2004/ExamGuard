@@ -20,7 +20,7 @@ const AddQuestions = () => {
     options: ['', '', '', ''],
     correctAnswer: 0, // Set default value here
   }]);
-  const [Loading , setLoading] = useState(false)
+  const [Loading, setLoading] = useState(false)
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [prompt, setPrompt] = useState('');
@@ -157,102 +157,98 @@ const AddQuestions = () => {
       </div>
 
       {/* Main Content */}
-      <div className="ml-60 main-content flex-1 p-8">
-        <div className="bg-white shadow-lg rounded-lg p-6">
-          <h1 className="text-2xl font-bold mb-4">Add Questions</h1>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor={`question-${currentQuestion}-title`}>Question {currentQuestion + 1} Title</Label>
-              <Input
-                id={`question-${currentQuestion}-title`}
-                placeholder="Enter question title"
-                value={questions[currentQuestion].title}
-                onChange={(e) => updateQuestion('title', e.target.value, currentQuestion)}
-                className="w-full mb-4"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {questions[currentQuestion].options.map((option, index) => (
-                <div key={index}>
-                  <Label htmlFor={`question-${currentQuestion}-option-${index}`}>Option {index + 1}</Label>
-                  <Input
-                    id={`question-${currentQuestion}-option-${index}`}
-                    placeholder={`Enter option ${index + 1}`}
-                    value={option}
-                    onChange={(e) =>
-                      updateQuestion('options', e.target.value, currentQuestion, index)
-                    }
-                    className="mb-4"
-                  />
-                </div>
-              ))}
-            </div>
-            <div>
-              <Select
-                id={`question-${currentQuestion}-correct-answer`}
-                value={correctAnswer}
-                onValueChange={(value) => updateQuestion('correctAnswer', parseInt(value), currentQuestion)}
-                className="w-full mb-4"
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select correct answer" />
-                </SelectTrigger>
-                <SelectContent>
-                  {currentQuestionData.options.map((_, index) => (
-                    <SelectItem key={index} value={index.toString()}>
-                      Option {index + 1}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex justify-between items-center">
-              {currentQuestion > 0 && (
-                <Button variant="outline" onClick={() => navigateToQuestion(currentQuestion - 1)}>
-                  Previous
-                </Button>
-              )}
-              {currentQuestion < questions.length - 1 && (
-                <Button onClick={() => navigateToQuestion(currentQuestion + 1)}>Next</Button>
-              )}
-              <Button onClick={addQuestion} variant="outline" className="flex items-center gap-2">
-                <PlusIcon className="w-4 h-4" />
-                Add Question
+      <Card className="ml-72 mr-10 main-content flex-1 p-8 shadow-lg rounded-lg ">
+        <h1 className="text-2xl font-bold mb-4">Add Questions</h1>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor={`question-${currentQuestion}-title`}>Question {currentQuestion + 1} Title</Label>
+            <Input
+              id={`question-${currentQuestion}-title`}
+              placeholder="Enter question title"
+              value={questions[currentQuestion].title}
+              onChange={(e) => updateQuestion('title', e.target.value, currentQuestion)}
+              className="w-full mb-4"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {questions[currentQuestion].options.map((option, index) => (
+              <div key={index}>
+                <Label htmlFor={`question-${currentQuestion}-option-${index}`}>Option {index + 1}</Label>
+                <Input
+                  id={`question-${currentQuestion}-option-${index}`}
+                  placeholder={`Enter option ${index + 1}`}
+                  value={option}
+                  onChange={(e) =>
+                    updateQuestion('options', e.target.value, currentQuestion, index)
+                  }
+                  className="mb-4"
+                />
+              </div>
+            ))}
+          </div>
+          <div>
+            <Select
+              id={`question-${currentQuestion}-correct-answer`}
+              value={correctAnswer}
+              onValueChange={(value) => updateQuestion('correctAnswer', parseInt(value), currentQuestion)}
+              className="w-full mb-4"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select correct answer" />
+              </SelectTrigger>
+              <SelectContent>
+                {currentQuestionData.options.map((_, index) => (
+                  <SelectItem key={index} value={index.toString()}>
+                    Option {index + 1}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex justify-between items-center">
+            {currentQuestion > 0 && (
+              <Button variant="outline" onClick={() => navigateToQuestion(currentQuestion - 1)}>
+                Previous
               </Button>
-              {currentQuestion === questions.length - 1 && (
-                <Button onClick={handleSaveQuestions}>Save Questions</Button>
-              )}
-            </div>
+            )}
+            {currentQuestion < questions.length - 1 && (
+              <Button onClick={() => navigateToQuestion(currentQuestion + 1)}>Next</Button>
+            )}
+            <Button onClick={addQuestion} variant="outline" className="flex items-center gap-2">
+              <PlusIcon className="w-4 h-4" />
+              Add Question
+            </Button>
+            {currentQuestion === questions.length - 1 && (
+              <Button onClick={handleSaveQuestions}>Save Questions</Button>
+            )}
           </div>
         </div>
-      </div>
+      </Card>
 
-      {/* Prompt Section */}
-      <div className="ml-60 main-content flex-1 p-8">
-        <div className="bg-white shadow-lg rounded-lg p-6">
-          <h2 className="text-xl font-bold mb-4">Generate Questions via Prompt</h2>
-          <div className="space-y-4">
-            <Label htmlFor="exam-prompt">Enter Prompt</Label>
-            <Input
-              id="exam-prompt"
-              placeholder="Enter prompt to generate questions"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              className="w-full mb-4"
-            />
-            <Label htmlFor="num-questions">Number of Questions</Label>
-            <Input
-              id="num-questions"
-              type="number"
-              min="1"
-              value={numQuestions}
-              onChange={(e) => setNumQuestions(parseInt(e.target.value))}
-              className="w-full mb-4"
-            />
-            <Button onClick={handleGenerateQuestions} disabled={Loading} className="w-full">Generate Questions</Button>
-          </div>
+      <Card className="ml-72 mr-10 main-content flex-1 p-6">
+        <h2 className="text-xl font-bold mb-4">Generate Questions via Prompt</h2>
+        <div className="space-y-4">
+          <Label htmlFor="exam-prompt">Enter Prompt</Label>
+          <Input
+            id="exam-prompt"
+            placeholder="Enter prompt to generate questions"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            className="w-full mb-4"
+          />
+          <Label htmlFor="num-questions">Number of Questions</Label>
+          <Input
+            id="num-questions"
+            type="number"
+            min="1"
+            value={numQuestions}
+            onChange={(e) => setNumQuestions(parseInt(e.target.value))}
+            className="w-full mb-4"
+          />
+          <Button onClick={handleGenerateQuestions} disabled={Loading} className="w-1/2">Generate Questions</Button>
         </div>
-      </div>
+      </Card>
+
     </div>
   );
 };
