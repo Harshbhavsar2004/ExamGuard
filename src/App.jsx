@@ -22,7 +22,7 @@ import { BarLoader } from "react-spinners";
 import { LoginContext } from "./components/Context/Context";
 
 const AppRoutes = () => {
-  const {setLoginData} = useContext(LoginContext)
+  const { setLoginData } = useContext(LoginContext)
   const [data, setData] = useState(false);
   const { theme } = useTheme();
   const history = useNavigate();
@@ -114,6 +114,10 @@ const AppRoutes = () => {
           <Route
             path="/adminExamsDetails"
             element={<ProtectedRoute element={<AdminExamstudent />} />}
+          />
+          <Route
+            path="/admin-setting"
+            element={<ProtectedRoute element={<AdminSetting />} />}
           />
         </Routes>
       ) : (
