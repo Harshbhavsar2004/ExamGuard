@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { toast, Toaster } from 'react-hot-toast';
 import Navbar from '../../Pages/Admin/Navbar';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { Card } from '@/components/ui/card';
 
 const genAI = new GoogleGenerativeAI("AIzaSyAVQFc-U4OBlAC7LVw7OMbedlCHnpx0uwk");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -19,6 +20,7 @@ const AddQuestions = () => {
     options: ['', '', '', ''],
     correctAnswer: 0, // Set default value here
   }]);
+  const [Loading , setLoading] = useState(false)
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [prompt, setPrompt] = useState('');
@@ -68,6 +70,7 @@ const AddQuestions = () => {
   };
 
   const handleGenerateQuestions = async () => {
+    setLoading(true)
     try {
       const fullPrompt = `Generate ${numQuestions} questions on the following topic, each with 4 options and indicate the correct option index. Provide the response in JSON format, give only array no other things:
       Topic: ${prompt}
@@ -119,6 +122,7 @@ const AddQuestions = () => {
         });
         setQuestions(newQuestions);
         setCurrentQuestion(0);
+        setLoading(false)
         toast.success('Questions generated successfully!');
       } else {
         toast.error('The format of the generated questions is incorrect.');
@@ -245,7 +249,7 @@ const AddQuestions = () => {
               onChange={(e) => setNumQuestions(parseInt(e.target.value))}
               className="w-full mb-4"
             />
-            <Button onClick={handleGenerateQuestions} className="w-full">Generate Questions</Button>
+            <Button onClick={handleGenerateQuestions} disabled={Loading} className="w-full">Generate Questions</Button>
           </div>
         </div>
       </div>
