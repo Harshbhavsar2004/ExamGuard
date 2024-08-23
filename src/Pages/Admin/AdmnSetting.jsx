@@ -80,7 +80,7 @@ export default function AdminSetting() {
     }
   };
 
-  if (loading) return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
+  if (loading) return <div className="w-full h-screen flex justify-center items-center"><SyncLoader /></div>;
 
   const tableRows = users.map((user, index) => (
     <tr key={index} className="border-b">

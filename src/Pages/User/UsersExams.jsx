@@ -61,7 +61,7 @@ const ExamsList = () => {
     }
   };
 
-  if (loading) return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
+  if (loading) return <div className="w-full h-screen flex justify-center items-center"><SyncLoader /></div>;
   if (error) return <div>Error: {error}</div>;
 
   const calculateDuration = (startTime, endTime) => {

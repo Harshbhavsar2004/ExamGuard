@@ -20,7 +20,7 @@ function ProtectedRoute({ element }) {
 
   if (isAuthenticated === null) {
     // While checking authentication, you can show a loading spinner or message
-    return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
+    return <div className="w-full h-screen flex justify-center items-center"><SyncLoader /></div>;
   }
 
   if (!isAuthenticated) {

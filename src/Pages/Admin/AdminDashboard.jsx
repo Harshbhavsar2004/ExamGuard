@@ -64,7 +64,7 @@ export default function AdminDashboard() {
   }, [token, logindata]);
 
   if (loading) {
-    return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>; // Show loading state while fetching
+    return <div className="w-full h-screen flex justify-center items-center"><SyncLoader /></div>; // Show loading state while fetching
   }
 
   const handleDeleteExam = async (title) => {

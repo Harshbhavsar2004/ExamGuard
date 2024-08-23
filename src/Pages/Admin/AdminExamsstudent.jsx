@@ -36,7 +36,7 @@ export default function AdminExamstudent() {
         fetchExams();
     }, [logindata]);
 
-    if (loading) return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
+    if (loading) return <div className="w-full h-screen flex justify-center items-center"><SyncLoader /></div>;
     if (error) return <p>Error: {error}</p>;
 
     return (

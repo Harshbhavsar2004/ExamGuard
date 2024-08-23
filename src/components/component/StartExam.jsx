@@ -77,7 +77,7 @@ export default function StartExam() {
   };
 
   if (loading) {
-    return <div className="w-full h-full flex justify-center items-center"><SyncLoader /></div>;
+    return <div className="w-full h-screen flex justify-center items-center"><SyncLoader /></div>;
   }
 
   if (error) {
