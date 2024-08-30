@@ -117,7 +117,7 @@ export default function AdminDashboard() {
               <UsersIcon className="w-6 h-6 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">2,345</div>
+              <div className="text-3xl font-bold">5</div>
             </CardContent>
           </Card>
           <Card>
