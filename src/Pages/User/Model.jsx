@@ -27,38 +27,7 @@ const Model = ({ setRun }) => {
   }, [isOpen]);
 
   const handleHome = async () => {
-    setLoading(true);
-    const token = localStorage.getItem('usersdatatoken');
-    if (!token) {
-        console.error('No token found');
-        setLoading(false);
-        return;
-    }
-
-    try {
-        const response = await fetch('https://examination-center.onrender.com/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ submit: true })
-        });
-
-        if (!response.ok) {
-            console.error('Error submitting', response.statusText);
-            setLoading(false);
-            return;
-        }
-
-        navigate('/user-dashboard'); 
-        console.log('Submission successful');
-        setLoading(false);
-
-    } catch (error) {
-        console.error('Error in submission process:', error);
-        setLoading(false);
-    }
+       navigate("/user-dashboard")
   };
 
   const handleCloseModal = () => {
