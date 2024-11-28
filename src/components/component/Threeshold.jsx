@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import Model from '../../Pages/User/Model';
 import {toast , Toaster } from 'react-hot-toast';
 
-const socket = io('http://localhost:3000', {
+const socket = io('https://examination-center.onrender.com', {
   transports: ['websocket']
 });
 
