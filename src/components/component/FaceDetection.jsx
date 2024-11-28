@@ -121,7 +121,7 @@ const FaceDetection = ({ run , setRun }) => {
     const token = localStorage.getItem('usersdatatoken');
     if (blendShapes[0].categories[13].score >= 0.8) {
       try {
-        await fetch('https://examination-center.onrender.com/left', {
+        await fetch('/api/cheats/left', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ const FaceDetection = ({ run , setRun }) => {
 
     if (blendShapes[0].categories[14].score >= 0.8) {
       try {
-        await fetch('https://examination-center.onrender.com/right', {
+        await fetch('/api/cheats/right', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

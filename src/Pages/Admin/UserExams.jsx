@@ -21,7 +21,7 @@ export default function ExamList() {
           return;
         }
   
-        const response = await fetch(`https://examination-center.onrender.com/exams?email=${logindata.ValidUserOne.email}`, {
+        const response = await fetch(`/api/exams/exams?email=${logindata.ValidUserOne.email}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -33,7 +33,7 @@ export default function ExamList() {
           throw new Error('Network response was not ok');
         }
   
-        const data = await response.json();        
+        const data = await response.json();     
         setExams(data.exams);
       } catch (error) {
         console.error('Error fetching exam details:', error);
@@ -46,6 +46,7 @@ export default function ExamList() {
   // Function to handle view exam button click
   function handleViewExam(exam) {
     setSelectedExam(exam);
+    console.log(exam);
   }
 
   // Function to handle back to list
@@ -54,19 +55,24 @@ export default function ExamList() {
   }
 
   const handleDeleteExam = async (title) => {
+    if(!logindata){
+      toast.error('Please login to delete the exam');
+      return;
+    }
+    console.log(title,logindata);
     try {
       if (!logindata) {
         console.error('No login data available');
         return;
       }
 
-      const response = await fetch(`https://examination-center.onrender.com/exams`, {
+      const response = await fetch(`/api/exams/exams`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, email: logindata.email }), // Include email in the request body
+        body: JSON.stringify({ title, email: logindata.ValidUserOne.email }), // Include email in the request body
       });
 
       if (!response.ok) {
@@ -74,6 +80,7 @@ export default function ExamList() {
       }
 
       const data = await response.json();
+      
       setExams(prevExams => prevExams.filter(exam => exam.title !== title));
     } catch (error) {
       console.error('Error deleting exam:', error);
@@ -114,6 +121,11 @@ export default function ExamList() {
               </div>
               <div className="mt-6">
                 <h2 className="text-lg font-semibold">Questions</h2>
+                {selectedExam.images.map((image,index)=>{
+                    return(
+                      <img src={image} key={index} alt={`Question ${index + 1}`} className="mt-2 w-full" />
+                    )
+                })}
                 {selectedExam.questions.map((question, index) => (
                   <div key={index} className="mb-4">
                     <h3 className="font-medium">Q{index + 1}: {question.title}</h3>

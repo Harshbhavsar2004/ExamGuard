@@ -21,7 +21,7 @@ const UserNavbar = () => {
                     Exams
                 </Link>
                 <Link
-                    to="/results"
+                    to="/user-result"
                     className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
                 >
                     <AwardIcon className="h-5 w-5" />

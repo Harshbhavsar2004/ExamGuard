@@ -5,7 +5,7 @@ import { useTheme } from "./components/Context/ThemeProvider";
 import StudentShow from "./Pages/Student";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
-import UserDash from "./Pages/User/UserDash";
+import UserDash from "./Pages/User/Userdashboard";
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import ProtectedRoute from "./components/component/ProtectedRoute";
 import AddExam from "./Pages/Admin/Add-Exam";
@@ -15,11 +15,12 @@ import AdminSetting from "./Pages/Admin/AdmnSetting";
 import UsersExams from "./Pages/User/UsersExams";
 import ExamPage from "./Pages/User/ExamPage";
 import Profile from "./components/component/ConformUser";
-import Result from "./Pages/User/Result";
-import AdminExamstudent from "./Pages/Admin/AdminExamsstudent";
+import UserResult from "./Pages/User/UserResult";
+import AdminExamstudent from "./Pages/Admin/AdminResult";
 import StartExam from "./components/component/StartExam";
 import { BarLoader } from "react-spinners";
 import { LoginContext } from "./components/Context/Context";
+import AdminResult from "./Pages/Admin/AdminResult";
 
 const AppRoutes = () => {
   const { setLoginData } = useContext(LoginContext)
@@ -33,11 +34,11 @@ const AppRoutes = () => {
     if (!token) {
       history("/");
     }
-    const res = await fetch("https://examination-center.onrender.com/validuser", {
+    const res = await fetch("/api/users/validuser", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: `bearer ${localStorage.getItem("usersdatatoken")}`,
       },
     });
 
@@ -108,12 +109,12 @@ const AppRoutes = () => {
             element={<ProtectedRoute element={<Profile />} />}
           />
           <Route
-            path="/results"
-            element={<ProtectedRoute element={<Result />} />}
+            path="/user-result"
+            element={<ProtectedRoute element={<UserResult />} />}
           />
           <Route
-            path="/adminExamsDetails"
-            element={<ProtectedRoute element={<AdminExamstudent />} />}
+            path="/admin-result"
+            element={<ProtectedRoute element={<AdminResult />} />}
           />
         </Routes>
       ) : (

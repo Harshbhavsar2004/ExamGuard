@@ -6,25 +6,23 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Button } from '@/components/ui/button';
 import { toast, Toaster } from 'react-hot-toast';
 import Navbar from '../../Pages/Admin/Navbar';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Card } from '@/components/ui/card';
-
-const genAI = new GoogleGenerativeAI("AIzaSyAVQFc-U4OBlAC7LVw7OMbedlCHnpx0uwk");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+import { PlusIcon, TrashIcon } from 'lucide-react';
 
 const AddQuestions = () => {
   const { examId } = useParams();
   const navigate = useNavigate();
-  const [questions, setQuestions] = useState([{
-    title: '',
-    options: ['', '', '', ''],
-    correctAnswer: 0, // Set default value here
-  }]);
-  const [Loading, setLoading] = useState(false)
-
+  const [questions, setQuestions] = useState([
+    {
+      title: '',
+      options: ['', '', '', ''],
+      correctAnswer: 0,
+      image: null,
+    },
+  ]);
+  const [Loading, setLoading] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [prompt, setPrompt] = useState('');
-  const [numQuestions, setNumQuestions] = useState(5); // New state for number of questions
+  const [Image, setImage] = useState(null);
 
   const addQuestion = () => {
     setQuestions([
@@ -33,9 +31,18 @@ const AddQuestions = () => {
         title: '',
         options: ['', '', '', ''],
         correctAnswer: 0,
+        image: null,
       },
     ]);
     setCurrentQuestion(questions.length);
+  };
+
+  const deleteQuestion = (index) => {
+    const updatedQuestions = questions.filter((_, i) => i !== index);
+    setQuestions(updatedQuestions);
+    if (currentQuestion >= updatedQuestions.length) {
+      setCurrentQuestion(updatedQuestions.length - 1);
+    }
   };
 
   const navigateToQuestion = (index) => {
@@ -45,91 +52,30 @@ const AddQuestions = () => {
   const handleSaveQuestions = async () => {
     try {
       const token = localStorage.getItem('usersdatatoken');
-      const response = await fetch(`https://examination-center.onrender.com/exams/${examId}`, {
+      const questionsWithoutImage = questions.map(({ image, ...rest }) => rest);
+      const payload = { questions: questionsWithoutImage };
+
+      const response = await fetch(`/api/exams/exams/${examId}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ questions }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
-        toast.success('Exam Created Successfully!');
+        toast.success('Exam questions saved successfully!');
         setTimeout(() => {
           navigate('/Users-Exams');
         }, 2000);
       } else {
         const error = await response.json();
-        toast.error(`Failed to add questions: ${error.message}`);
+        toast.error(`Failed to save questions: ${error.message}`);
       }
     } catch (error) {
-      toast.error('Failed to add questions.');
+      toast.error('Failed to save questions.');
       console.error(error);
-    }
-  };
-
-  const handleGenerateQuestions = async () => {
-    setLoading(true)
-    try {
-      const fullPrompt = `Generate ${numQuestions} questions on the following topic, each with 4 options and indicate the correct option index. Provide the response in JSON format, give only array no other things:
-      Topic: ${prompt}
-      The output should be a JSON array where each object has the following fields:
-      - title: The question title
-      - options: An array of 4 options
-      - correctAnswer: The index of the correct answer (0-based)
-      Example JSON format:
-      [
-        {
-          "title": "Question Title 1",
-          "options": [
-            "Option 1",
-            "Option 2",
-            "Option 3",
-            "Option 4"
-          ],
-          "correctAnswer": 0
-        }
-        // Add more questions as needed
-      ]`;
-
-      const result = await model.generateContent(fullPrompt);
-      const response = await result.response;
-      const text = await response.text();
-
-      let newQuestions = [];
-      try {
-        newQuestions = JSON.parse(text.trim());
-      } catch (error) {
-        console.error('Failed to parse JSON:', error);
-        toast.error('Failed to parse the generated questions.');
-        return;
-      }
-
-      if (Array.isArray(newQuestions)) {
-        newQuestions.forEach(question => {
-          if (
-            typeof question.title === 'string' &&
-            Array.isArray(question.options) &&
-            question.options.length === 4 &&
-            typeof question.correctAnswer === 'number' &&
-            question.correctAnswer >= 0 && question.correctAnswer < 4 // Ensure valid index
-          ) {
-            question.options = question.options.map(opt => opt.trim()); // Clean up options
-          } else {
-            console.error('Invalid question format:', question);
-          }
-        });
-        setQuestions(newQuestions);
-        setCurrentQuestion(0);
-        setLoading(false)
-        toast.success('Questions generated successfully!');
-      } else {
-        toast.error('The format of the generated questions is incorrect.');
-      }
-    } catch (error) {
-      toast.error('Failed to generate questions.');
-      console.error('Error in handleGenerateQuestions:', error);
     }
   };
 
@@ -145,22 +91,90 @@ const AddQuestions = () => {
     setQuestions(updatedQuestions);
   };
 
+  const handleImageUpload = async (e, questionIndex) => {
+    const file = e.target.files[0];
+    
+    if (!file) {
+      toast.error('No file selected.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('usersdatatoken');
+      if (!token) {
+        toast.error('User is not authenticated.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`/api/exams/${examId}/upload-image`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        const { images } = await response.json();
+        console.log(images);
+        setImage(images);
+        const updatedQuestions = [...questions];
+        updatedQuestions[questionIndex].image = images; // Save the image URL or any necessary details
+        setQuestions(updatedQuestions);
+        toast.success('Image uploaded successfully!');
+      } else {
+        const error = await response.json();
+        toast.error(`Failed to upload image: ${error.message}`);
+      }
+    } catch (error) {
+      toast.error('Failed to upload image. Please try again.');
+      console.error('Error uploading image:', error);
+    }
+  };
+
+  const handleDeleteImage = async (imageUrl, questionIndex) => {
+    try {
+      const token = localStorage.getItem('usersdatatoken');
+      const response = await fetch(`/api/exams/${examId}/delete-image`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageUrl }),
+      });
+
+      if (response.ok) {
+        const updatedQuestions = [...questions];
+        updatedQuestions[questionIndex].image = null; // Remove the image from the question
+        setQuestions(updatedQuestions);
+        toast.success('Image deleted successfully!');
+      } else {
+        const error = await response.json();
+        toast.error(`Failed to delete image: ${error.message}`);
+      }
+    } catch (error) {
+      toast.error('Refresh the page and try again.');
+      console.error('Error deleting image:', error);
+    }
+  };
+
   const currentQuestionData = questions[currentQuestion];
   const correctAnswer = currentQuestionData.correctAnswer !== null ? currentQuestionData.correctAnswer.toString() : '';
 
   return (
-    <div className="flex flex-col space-y-8">
-      {/* Navbar */}
-      <div>
+    <div className="flex space-x-8 ml-64 m-2">
+      {/* Left Section - Form */}
+      <div className="w-1/2">
         <Navbar />
         <Toaster />
-      </div>
 
-      {/* Main Content */}
-      <Card className="ml-72 mr-10 main-content flex-1 p-8 shadow-lg rounded-lg ">
-        <h1 className="text-2xl font-bold mb-4">Add Questions</h1>
-        <div className="space-y-4">
-          <div>
+        <Card className="p-8 shadow-lg rounded-lg">
+          <h1 className="text-2xl font-bold mb-4">Add Questions</h1>
+          <div className="space-y-4">
             <Label htmlFor={`question-${currentQuestion}-title`}>Question {currentQuestion + 1} Title</Label>
             <Input
               id={`question-${currentQuestion}-title`}
@@ -169,24 +183,22 @@ const AddQuestions = () => {
               onChange={(e) => updateQuestion('title', e.target.value, currentQuestion)}
               className="w-full mb-4"
             />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            {questions[currentQuestion].options.map((option, index) => (
-              <div key={index}>
-                <Label htmlFor={`question-${currentQuestion}-option-${index}`}>Option {index + 1}</Label>
-                <Input
-                  id={`question-${currentQuestion}-option-${index}`}
-                  placeholder={`Enter option ${index + 1}`}
-                  value={option}
-                  onChange={(e) =>
-                    updateQuestion('options', e.target.value, currentQuestion, index)
-                  }
-                  className="mb-4"
-                />
-              </div>
-            ))}
-          </div>
-          <div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {questions[currentQuestion].options.map((option, index) => (
+                <div key={index}>
+                  <Label htmlFor={`question-${currentQuestion}-option-${index}`}>Option {index + 1}</Label>
+                  <Input
+                    id={`question-${currentQuestion}-option-${index}`}
+                    placeholder={`Enter option ${index + 1}`}
+                    value={option}
+                    onChange={(e) => updateQuestion('options', e.target.value, currentQuestion, index)}
+                    className="mb-4"
+                  />
+                </div>
+              ))}
+            </div>
+
             <Select
               id={`question-${currentQuestion}-correct-answer`}
               value={correctAnswer}
@@ -204,74 +216,76 @@ const AddQuestions = () => {
                 ))}
               </SelectContent>
             </Select>
-          </div>
-          <div className="flex justify-between items-center">
-            {currentQuestion > 0 && (
-              <Button variant="outline" onClick={() => navigateToQuestion(currentQuestion - 1)}>
-                Previous
+
+            <Label htmlFor="image">Upload Image (optional)</Label>
+            <Input
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e, currentQuestion)}
+            />
+
+            <div className="flex justify-between items-center">
+              {currentQuestion > 0 && (
+                <Button variant="outline" onClick={() => navigateToQuestion(currentQuestion - 1)}>
+                  Previous
+                </Button>
+              )}
+              {currentQuestion < questions.length - 1 && (
+                <Button onClick={() => navigateToQuestion(currentQuestion + 1)}>Next</Button>
+              )}
+              <Button onClick={addQuestion} variant="outline" className="flex items-center gap-2">
+                <PlusIcon className="w-4 h-4" />
+                Add Question
               </Button>
-            )}
-            {currentQuestion < questions.length - 1 && (
-              <Button onClick={() => navigateToQuestion(currentQuestion + 1)}>Next</Button>
-            )}
-            <Button onClick={addQuestion} variant="outline" className="flex items-center gap-2">
-              <PlusIcon className="w-4 h-4" />
-              Add Question
-            </Button>
-            {currentQuestion === questions.length - 1 && (
-              <Button onClick={handleSaveQuestions}>Save Questions</Button>
-            )}
+            </div>
           </div>
-        </div>
-      </Card>
 
-      <Card className="ml-72 mr-10 main-content flex-1 p-6">
-        <h2 className="text-xl font-bold mb-4">Generate Questions via Prompt</h2>
+          <div className="mt-6">
+            <Button onClick={handleSaveQuestions} disabled={Loading}>
+              Save Questions
+            </Button>
+          </div>
+        </Card>
+      </div>
+
+      {/* Right Section - Preview */}
+      <div className="w-1/2 p-4 border-l-2">
+        <h2 className="text-xl font-semibold mb-4">Preview</h2>
         <div className="space-y-4">
-          <Label htmlFor="exam-prompt">Enter Prompt</Label>
-          <Input
-            id="exam-prompt"
-            placeholder="Enter prompt to generate questions"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            className="w-full mb-4"
-          />
-          <Label htmlFor="num-questions">Number of Questions</Label>
-          <Input
-            id="num-questions"
-            type="number"
-            min="1"
-            value={numQuestions}
-            onChange={(e) => setNumQuestions(parseInt(e.target.value))}
-            className="w-full mb-4"
-          />
-          <Button onClick={handleGenerateQuestions} disabled={Loading} className="w-1/2">Generate Questions</Button>
+          {questions.map((question, index) => (
+            <Card key={index} className="p-4 shadow-md mb-4">
+              <h3 className="text-lg font-bold">{question.title}</h3>
+              <ul className="space-y-2">
+                {question.options.map((option, optionIndex) => (
+                  <li key={optionIndex}>
+                    {optionIndex === question.correctAnswer ? (
+                      <span className="text-green-600">{optionIndex+1}.{option}</span>
+                    ) : (
+                      <span>{optionIndex+1}.{option}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              {
+                Image && Image.map((image,index)=>{
+                  return(
+                    <div>
+                      <img src={image} key={index} alt="Uploaded" className="mt-4" />
+                      <Button variant="outline" color="red" onClick={() => handleDeleteImage(image, index)} className="mt-2">
+                        <TrashIcon className="w-4 h-4" />
+                        Delete Image
+                      </Button>
+                    </div>
+                  )
+                })
+              }
+            </Card>
+          ))}
         </div>
-      </Card>
-
+      </div>
     </div>
   );
 };
 
 export default AddQuestions;
-
-
-function PlusIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
-    </svg>
-  );
-}

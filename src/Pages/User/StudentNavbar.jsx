@@ -21,12 +21,12 @@ import {
 import { ModeToggle } from './ModeToggle';
 import { SyncLoader } from 'react-spinners';
 import { Card } from '@/components/ui/card';
+
 const StudentNavbar = () => {
     const [userData, setUserData] = useState(null);
     const [hasToken, setHasToken] = useState(false);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const navigate = useNavigate();
-
 
     const fetchUserData = async () => {
         const token = localStorage.getItem("usersdatatoken");
@@ -34,16 +34,32 @@ const StudentNavbar = () => {
         if (token) {
             setHasToken(true);
             try {
-                const response = await fetch(`https://examination-center.onrender.com/validuser`, {
+                const response = await fetch(`/api/users/validuser`, {
                     method: "GET",
                     headers: {
-                        Authorization: token,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     setUserData(data.ValidUserOne); // Assuming `ValidUserOne` contains user data
+
+                    // Fetch user images
+                    const imageResponse = await fetch(`/api/users/${data.ValidUserOne._id}/images`, {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+
+                    if (imageResponse.ok) {
+                        const images = await imageResponse.json();
+                        const photo = images.find(img => img.type === 'photo');
+                        if (photo) {
+                            setUserData(prevData => ({ ...prevData, photoUrl: photo.url }));
+                        }
+                    }
                 } else {
                     setUserData(null);
                     setHasToken(false);
@@ -79,12 +95,12 @@ const StudentNavbar = () => {
                     <span className="text-lg font-semibold">Exam Tracker</span>
                 </Link>
                 <div className="flex items-center gap-4">
-                    <ModeToggle /> {/* Add ModeToggle here */}
+                    <ModeToggle />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="rounded-full">
                                 <img
-                                    src="https://plus.unsplash.com/premium_photo-1677094310956-7f88ae5f5c6b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                    src={userData?.photoUrl || "default-avatar-url"}
                                     width={32}
                                     height={32}
                                     className="rounded-full"
@@ -125,7 +141,7 @@ const StudentNavbar = () => {
                         {userData ? (
                             <>
                                 <img
-                                    src={userData.photo}
+                                    src={userData.photoUrl || "default-avatar-url"}
                                     alt="Profile-pic"
                                     className="rounded-full mb-5 w-40 h-40 object-cover border-4 border-black"
                                 />
@@ -140,10 +156,6 @@ const StudentNavbar = () => {
                                 <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
                                     <label htmlFor="name" className="text-right font-bold pr-4">Email</label>
                                     <span>{userData.email}</span>
-                                </div>
-                                <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
-                                    <label htmlFor="name" className="text-right font-bold pr-4">Course</label>
-                                    <span>{userData.course}</span>
                                 </div>
                                 <div className="grid grid-cols-[1fr,2fr] text-justify gap-4">
                                     <label htmlFor="name" className="text-right font-bold pr-4">Phone no</label>

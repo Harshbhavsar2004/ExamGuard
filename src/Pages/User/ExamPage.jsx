@@ -21,11 +21,13 @@ const ExamPage = () => {
     const navigate = useNavigate();
     const { logindata } = useContext(LoginContext);
     const [run, setRun] = useState(true);
+    const [cheatData, setCheatData] = useState([]);
+    const [score, setScore] = useState(0);
 
     useEffect(() => {
         const fetchExam = async () => {
             try {
-                const response = await fetch(`https://examination-center.onrender.com/exams/${examId}`);
+                const response = await fetch(`/api/exams/exams/${examId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -70,25 +72,29 @@ const ExamPage = () => {
             }
         });
 
-        const token = localStorage.getItem('usersdatatoken');
-
         try {
-            const addUserResponse = await fetch(`https://examination-center.onrender.com/exams/${examId}/add-user`, {
-                method: 'PATCH',
+            const response = await fetch(`/api/results/results`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${localStorage.getItem('usersdatatoken')}`
                 },
-                body: JSON.stringify({ name: logindata.ValidUserOne.email, score: score })
+                body: JSON.stringify({ examId, score })
             });
 
-            if (!addUserResponse.ok) {
-                throw new Error('Failed to add user data');
+            if (!response.ok) {
+                throw new Error('Failed to submit result');
             }
 
-            const addUserData = await addUserResponse.json();
+            console.log('Result submitted successfully');
+            navigate('/user-dashboard');
+        } catch (error) {
+            console.error(error);
+        }
 
-            const submitResponse = await fetch(`https://examination-center.onrender.com/submit`, {
+        try {
+            
+            const submitResponse = await fetch(`/api/cheats/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -108,6 +114,52 @@ const ExamPage = () => {
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const handleAction = async (actionType) => {
+        try {
+            const response = await fetch(`/api/cheats/${actionType}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to record action');
+            }
+
+            console.log(`${actionType} action recorded`);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch('/api/cheats/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch cheat data');
+            }
+
+            const data = await response.json();
+            setCheatData(data.cheats);
+            console.log('Cheat data:', data.cheats);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleSubmitResult = async () => {
+        
     };
 
     if (loading) return <div className="w-full h-screen flex justify-center items-center"><SyncLoader /></div>;
@@ -189,6 +241,7 @@ const ExamPage = () => {
                                 </div>
                             </CardContent>
                         </Card>
+                        <Button onClick={handleSubmitResult}>Submit Result</Button>
                     </div>
                 ) : (
                     <Profile onVerification={handleVerificationStatus} />

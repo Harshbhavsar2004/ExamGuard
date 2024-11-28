@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card'
 const Navbar = () => {
     return (
         <div>
-           <Card className="fixed top-0 left-0 h-screen w-64 bg-backgroun">
+           <Card className="fixed top-0 left-0 h-screen w-56 bg-backgroun">
            <nav className="flex flex-col gap-1 p-4">
             <Link
                     to="/admin-dashboard"
@@ -31,7 +31,7 @@ const Navbar = () => {
                     Create Exam
                 </Link>
                 <Link
-                    to="/adminExamsDetails"
+                    to="/admin-result"
                     className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-700 transition-colors"
                 >
                     <AwardIcon className="h-5 w-5" />

@@ -2,21 +2,19 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import Header from '@/components/component/Header';
-import { Toaster , toast } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+
 export default function Register() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fname: '',
     lname: '',
     email: '',
     phone: '',
     dob: '',
-    course: '',
-    batch: '',
     password: '',
     cpassword: '',
     photo: null,
@@ -42,7 +40,7 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch(`https://examination-center.onrender.com/register`, {
+      const response = await fetch(`/api/users/register`, {
         method: 'POST',
         body: formDataToSend,
       });
@@ -51,9 +49,9 @@ export default function Register() {
 
       if (response.status === 201) {
         toast.success("Registration successful!");
-        setTimeout(()=>{
-            navigate('/login')
-        },2000)
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       } else {
         toast.error(`Error: ${data.error}`);
       }
@@ -66,7 +64,7 @@ export default function Register() {
   return (
     <div>
       <Header />
-      <Toaster/>
+      <Toaster />
       <div className="flex justify-center items-start mt-16">
         <Card className="w-full md:w-1/2 p-4 sm:p-6 md:p-8">
           <CardHeader className="text-center">
@@ -98,24 +96,6 @@ export default function Register() {
               <div className="space-y-2">
                 <Label htmlFor="dob">Date of Birth</Label>
                 <Input id="dob" type="date" required onChange={handleInputChange} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="course">Course</Label>
-                <Select id="course" required onValueChange={(value) => setFormData({ ...formData, course: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a course" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="computer-science">Computer Science</SelectItem>
-                    <SelectItem value="business-administration">Business Administration</SelectItem>
-                    <SelectItem value="engineering">Engineering</SelectItem>
-                    <SelectItem value="design">Design</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="batch">Batch</Label>
-                <Input id="batch" placeholder="Enter your batch" required onChange={handleInputChange} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">

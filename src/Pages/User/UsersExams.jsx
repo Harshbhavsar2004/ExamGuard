@@ -15,7 +15,7 @@ const ExamsList = () => {
   useEffect(() => {
     const fetchExams = async () => {
       try {
-        const response = await fetch('https://examination-center.onrender.com/exams/users');
+        const response = await fetch('/api/exams/created-exams');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -104,6 +104,10 @@ const ExamsList = () => {
                 <div className="grid grid-cols-2 items-center gap-2">
                   <div className="text-muted-foreground">Duration:</div>
                   <div>{`${calculateDuration(exam.startTime, exam.endTime)} minutes`}</div>
+                </div>
+                <div className="grid grid-cols-2 items-center gap-2">
+                  <div className="text-muted-foreground">Exam ID:</div>
+                  <div>{exam._id}</div>
                 </div>
                 <Separator />
                 <div className="text-center text-muted-foreground">

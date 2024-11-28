@@ -6,17 +6,20 @@ import Navbar from './Navbar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Toaster, toast } from "react-hot-toast";
 import { SyncLoader } from "react-spinners";
+
 export default function AdminSetting() {
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const ITEMS_PER_PAGE = 5;
-  const [currentPage, setCurrentPage] = useState(0);
+  const [cheatData, setCheatData] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Fetch users on component mount
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await fetch('https://examination-center.onrender.com/users'); // Replace with your API endpoint
+        const response = await fetch('/api/users/users'); // Replace with your API endpoint
         const data = await response.json();
         setUsers(data);
         setLoading(false);
@@ -29,15 +32,58 @@ export default function AdminSetting() {
     fetchUsers();
   }, []);
 
-  const handleCheckActivity = (user) => {
-    setSelectedUser(user);
-    setShowActivityModal(true);
+  // Fetch cheat data for the selected user
+  useEffect(() => {
+    const fetchCheatData = async () => {
+      if (selectedUser && selectedUser._id) {
+        try {
+          const response = await fetch(`/api/cheats/cheat/${selectedUser._id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('usersdatatoken')}` // Assuming token is stored in localStorage
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch cheat data');
+          }
+
+          const data = await response.json();
+          setCheatData(data);
+        } catch (err) {
+          console.error(err.message);
+        }
+      }
+    };
+
+    fetchCheatData();
+  }, [selectedUser]);
+
+  const handleOpenDialog = (user) => {
+    setSelectedUser(user); // Set the selected user
+    setShowActivityModal(true); // Open the modal
   };
 
+  const handleCloseDialog = () => {
+    setShowActivityModal(false); // Close the modal
+    setSelectedUser(null); // Clear selected user
+    setCheatData([]); // Clear cheat data
+  };
+
+  const handleNext = () => {
+    if (currentIndex < cheatData.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
 
   const promoteToAdmin = async (email) => {
     try {
-      const response = await fetch("https://examination-center.onrender.com/promote-to-admin", {
+      const response = await fetch("/api/users/promote-to-admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,11 +102,10 @@ export default function AdminSetting() {
     }
   };
 
-
   const handleResetCounts = async (userId) => {
     try {
-      const response = await fetch(`https://examination-center.onrender.com/resetCounts/${userId}`, {
-        method: 'GET',
+      const response = await fetch(`/api/cheats/erase/${userId}`, {
+        method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -80,7 +125,13 @@ export default function AdminSetting() {
     }
   };
 
-  if (loading) return <div className="w-full h-screen flex justify-center items-center"><SyncLoader /></div>;
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <SyncLoader />
+      </div>
+    );
+  }
 
   const tableRows = users.map((user, index) => (
     <tr key={index} className="border-b">
@@ -95,17 +146,10 @@ export default function AdminSetting() {
       </td>
       <td className="px-4 py-3">{user.email}</td>
       <td className="px-4 py-3">
-        <Badge variant="outline" className={`bg-${user.role === 'Admin' ? 'accent' : 'primary'} text-${user.role === 'Admin' ? 'accent' : 'primary'}-foreground`}>
-          {user.Score}
-        </Badge>
+        <Badge>{user.Role}</Badge>
       </td>
       <td className="px-4 py-3">
-        <Badge variant="outline" className={`bg-${user.role === 'Admin' ? 'accent' : 'primary'} text-${user.role === 'Admin' ? 'accent' : 'primary'}-foreground`}>
-          {user.Role}
-        </Badge>
-      </td>
-      <td className="px-4 py-3">
-        <Button size="sm" variant="outline" onClick={() => handleCheckActivity(user)}>
+        <Button size="sm" variant="outline" onClick={() => handleOpenDialog(user)}>
           Check Activity
         </Button>
       </td>
@@ -139,61 +183,47 @@ export default function AdminSetting() {
               <tr className="bg-muted text-muted-foreground">
                 <th className="px-4 py-3 text-left">Name</th>
                 <th className="px-4 py-3 text-left">Email</th>
-                <th className="px-4 py-3 text-left">Score</th>
                 <th className="px-4 py-3 text-left">Role</th>
                 <th className="px-4 py-3 text-left">Activity</th>
                 <th className="px-4 py-3 text-left">Reset Exam</th>
                 <th className="px-4 py-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody>
-              {tableRows}
-            </tbody>
+            <tbody>{tableRows}</tbody>
           </table>
         </div>
-
         {showActivityModal && (
           <Dialog open={showActivityModal} onOpenChange={setShowActivityModal}>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Activity Details for {selectedUser?.fname}</DialogTitle>
               </DialogHeader>
-              <a
-                href={selectedUser.txUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="max-w-xs overflow-hidden text-ellipsis font-bold"
-                onClick={() => window.open(selectedUser.txUrl, '_blank')}
-              >
-                {selectedUser.txUrl}
-              </a>
-
-              <div className="modal-body">
-                <span>
-                  {selectedUser.Cheat.slice(currentPage * ITEMS_PER_PAGE, (currentPage + 1) * ITEMS_PER_PAGE).map((item, index) => (
-                    <div key={index}>
-                      <p>Type: {item.type}</p>
-                      <p>Time: {item.timestamp}</p>
-                    </div>
-                  ))}
-                </span>
-                <div className="pagination">
-                  <Button
-                    className='m-5'
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 0}>
-                    Previous
-                  </Button>
-                  <Button
-                    className='m-5'
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={(currentPage + 1) * ITEMS_PER_PAGE >= selectedUser.Cheat.length}>
-                    Next
-                  </Button>
+              {cheatData.length > 0 ? (
+                <div className="modal-body">
+                  <p>Type: {cheatData[currentIndex]?.type}</p>
+                  <p>Time: {new Date(cheatData[currentIndex]?.timestamp).toLocaleString()}</p>
+                  <div className="pagination">
+                    <Button
+                      className="m-5"
+                      onClick={handlePrevious}
+                      disabled={currentIndex === 0}
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      className="m-5"
+                      onClick={handleNext}
+                      disabled={currentIndex === cheatData.length - 1}
+                    >
+                      Next
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <p>No cheat data available</p>
+              )}
               <DialogFooter>
-                <Button onClick={() => setShowActivityModal(false)}>Close</Button>
+                <Button onClick={handleCloseDialog}>Close</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import Model from '../../Pages/User/Model';
 import {toast , Toaster } from 'react-hot-toast';
 
-const socket = io('https://examination-center.onrender.com', {
+const socket = io('http://localhost:3000', {
   transports: ['websocket']
 });
 
@@ -32,8 +32,10 @@ const Threeshold = ({ run, setRun }) => {
                 toast.error(`Socket.IO connection error: ${error.message}`);
             });
 
-            socket.on('valuesCheck', (result) => {
-                setShowModal(result);
+            socket.on('blockExam', (shouldBlock) => {
+                if (shouldBlock) {
+                    setShowModal(true);
+                }
             });
         };
 
@@ -52,7 +54,7 @@ const Threeshold = ({ run, setRun }) => {
             clearInterval(interval);
             socket.off('connect');
             socket.off('connect_error');
-            socket.off('valuesCheck');
+            socket.off('blockExam');
         };
     }, []);
 

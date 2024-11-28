@@ -53,20 +53,36 @@ const Profile = ({ onVerification }) => {
 
     const DashboardValid = async () => {
         let token = localStorage.getItem("usersdatatoken");
-        const res = await fetch("https://examination-center.onrender.com/validuser", {
+        const res = await fetch("/api/users/validuser", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: token,
+                Authorization: `Bearer ${token}`,
             },
         });
+        
         const data = await res.json();
         if (data.status === 401 || !data) {
             history("*");
         } else {
             setLoginData(data);
             setData(data);
-            setPhotoUrl(data.ValidUserOne.photo);
+
+            // Fetch user images
+            const imageResponse = await fetch(`/api/users/${data.ValidUserOne._id}/images`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (imageResponse.ok) {
+                const images = await imageResponse.json();
+                const photo = images.find(img => img.type === 'photo');
+                if (photo) {
+                    setPhotoUrl(photo.url);
+                }
+            }
         }
     };
 
