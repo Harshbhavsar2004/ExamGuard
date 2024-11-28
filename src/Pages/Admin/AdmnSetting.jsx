@@ -19,7 +19,7 @@ export default function AdminSetting() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await fetch('/api/users/users'); // Replace with your API endpoint
+        const response = await fetch('https://examination-center.onrender.com/api/users/users'); // Replace with your API endpoint
         const data = await response.json();
         setUsers(data);
         setLoading(false);
@@ -37,7 +37,7 @@ export default function AdminSetting() {
     const fetchCheatData = async () => {
       if (selectedUser && selectedUser._id) {
         try {
-          const response = await fetch(`/api/cheats/cheat/${selectedUser._id}`, {
+          const response = await fetch(`https://examination-center.onrender.com/api/cheats/cheat/${selectedUser._id}`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('usersdatatoken')}` // Assuming token is stored in localStorage
             }
@@ -83,7 +83,7 @@ export default function AdminSetting() {
 
   const promoteToAdmin = async (email) => {
     try {
-      const response = await fetch("/api/users/promote-to-admin", {
+      const response = await fetch("https://examination-center.onrender.com/api/users/promote-to-admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export default function AdminSetting() {
 
   const handleResetCounts = async (userId) => {
     try {
-      const response = await fetch(`/api/cheats/erase/${userId}`, {
+      const response = await fetch(`https://examination-center.onrender.com/api/cheats/erase/${userId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });

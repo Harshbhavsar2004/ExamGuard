@@ -21,7 +21,7 @@ function AudioDetector() {
                         setAlert(true);
                         setCount(prevCount => prevCount + 1); // Increment Count variable
                         // Hit the backend endpoint using fetch
-                        fetch('/api/cheats/voice', {
+                        fetch('https://examination-center.onrender.com/api/cheats/voice', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

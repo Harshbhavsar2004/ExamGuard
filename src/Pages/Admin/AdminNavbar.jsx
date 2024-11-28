@@ -30,7 +30,7 @@ const AdminNavbar = () => {
         if (token) {
             setHasToken(true);
             try {
-                const response = await fetch(`/api/users/validuser`, {
+                const response = await fetch(`https://examination-center.onrender.com/api/users/validuser`, {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${token}`,

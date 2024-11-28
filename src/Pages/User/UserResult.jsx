@@ -17,7 +17,7 @@ const UserResult = () => {
 
     const fetchResults = async () => {
       try {
-        const response = await fetch(`/api/results/results/${logindata.ValidUserOne._id}`);
+        const response = await fetch(`https://examination-center.onrender.com/api/results/results/${logindata.ValidUserOne._id}`);
         if (!response.ok) {
           throw new Error('Results not found');
         }

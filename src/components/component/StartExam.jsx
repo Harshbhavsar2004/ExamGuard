@@ -14,7 +14,7 @@ export default function StartExam() {
   useEffect(() => {
     const fetchExamData = async () => {
       try {
-        const response = await fetch(`/api/exams/exams/${id}`);
+        const response = await fetch(`https://examination-center.onrender.com/api/exams/exams/${id}`);
         if (!response.ok) {
           throw new Error("Exam not found");
         }

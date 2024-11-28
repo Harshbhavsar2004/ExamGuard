@@ -23,7 +23,7 @@ export default function UserDash() {
     useEffect(() => {
         const fetchUpcomingExams = async () => {
             try {
-                const response = await fetch('/api/exams/created-exams');
+                const response = await fetch('https://examination-center.onrender.com/api/exams/created-exams');
                 if (!response.ok) {
                     throw new Error('Failed to fetch upcoming exams');
                 }

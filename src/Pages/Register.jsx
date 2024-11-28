@@ -40,7 +40,7 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch(`/api/users/register`, {
+      const response = await fetch(`https://examination-center.onrender.com/api/users/register`, {
         method: 'POST',
         body: formDataToSend,
       });

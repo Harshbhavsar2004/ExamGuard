@@ -46,7 +46,7 @@ const AddQuestions = () => {
   const handleSaveQuestions = async () => {
     try {
       const token = localStorage.getItem('usersdatatoken');
-      const response = await fetch(`/api/exams/exams/${examId}`, {
+      const response = await fetch(`https://examination-center.onrender.com/api/exams/exams/${examId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

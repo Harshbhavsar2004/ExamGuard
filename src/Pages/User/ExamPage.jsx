@@ -27,7 +27,7 @@ const ExamPage = () => {
     useEffect(() => {
         const fetchExam = async () => {
             try {
-                const response = await fetch(`/api/exams/exams/${examId}`);
+                const response = await fetch(`https://examination-center.onrender.com/api/exams/exams/${examId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -73,7 +73,7 @@ const ExamPage = () => {
         });
 
         try {
-            const response = await fetch(`/api/results/results`, {
+            const response = await fetch(`https://examination-center.onrender.com/api/results/results`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const ExamPage = () => {
 
         try {
             
-            const submitResponse = await fetch(`/api/cheats/submit`, {
+            const submitResponse = await fetch(`https://examination-center.onrender.com/api/cheats/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ const ExamPage = () => {
 
     const handleAction = async (actionType) => {
         try {
-            const response = await fetch(`/api/cheats/${actionType}`, {
+            const response = await fetch(`https://examination-center.onrender.com/api/cheats/${actionType}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ const ExamPage = () => {
 
     const handleSubmit = async () => {
         try {
-            const response = await fetch('/api/cheats/submit', {
+            const response = await fetch('https://examination-center.onrender.com/api/cheats/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

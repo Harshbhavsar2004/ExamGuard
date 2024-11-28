@@ -34,7 +34,7 @@ const StudentNavbar = () => {
         if (token) {
             setHasToken(true);
             try {
-                const response = await fetch(`/api/users/validuser`, {
+                const response = await fetch(`https://examination-center.onrender.com/api/users/validuser`, {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const StudentNavbar = () => {
                     setUserData(data.ValidUserOne); // Assuming `ValidUserOne` contains user data
 
                     // Fetch user images
-                    const imageResponse = await fetch(`/api/users/${data.ValidUserOne._id}/images`, {
+                    const imageResponse = await fetch(`https://examination-center.onrender.com/api/users/${data.ValidUserOne._id}/images`, {
                         method: "GET",
                         headers: {
                             Authorization: `Bearer ${token}`,

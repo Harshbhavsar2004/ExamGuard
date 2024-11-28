@@ -21,7 +21,7 @@ export default function ExamList() {
           return;
         }
   
-        const response = await fetch(`/api/exams/exams?email=${logindata.ValidUserOne.email}`, {
+        const response = await fetch(`https://examination-center.onrender.com/api/exams/exams?email=${logindata.ValidUserOne.email}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -66,7 +66,7 @@ export default function ExamList() {
         return;
       }
 
-      const response = await fetch(`/api/exams/exams`, {
+      const response = await fetch(`https://examination-center.onrender.com/api/exams/exams`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

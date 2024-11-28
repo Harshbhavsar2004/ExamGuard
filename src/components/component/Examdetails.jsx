@@ -55,7 +55,7 @@ const AddQuestions = () => {
       const questionsWithoutImage = questions.map(({ image, ...rest }) => rest);
       const payload = { questions: questionsWithoutImage };
 
-      const response = await fetch(`/api/exams/exams/${examId}`, {
+      const response = await fetch(`https://examination-center.onrender.com/api/exams/exams/${examId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -109,7 +109,7 @@ const AddQuestions = () => {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await fetch(`/api/exams/${examId}/upload-image`, {
+      const response = await fetch(`https://examination-center.onrender.com/api/exams/${examId}/upload-image`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -138,7 +138,7 @@ const AddQuestions = () => {
   const handleDeleteImage = async (imageUrl, questionIndex) => {
     try {
       const token = localStorage.getItem('usersdatatoken');
-      const response = await fetch(`/api/exams/${examId}/delete-image`, {
+      const response = await fetch(`https://examination-center.onrender.com/api/exams/${examId}/delete-image`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

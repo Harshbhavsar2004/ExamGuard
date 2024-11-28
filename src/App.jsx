@@ -34,7 +34,7 @@ const AppRoutes = () => {
     if (!token) {
       history("/");
     }
-    const res = await fetch("/api/users/validuser", {
+    const res = await fetch("https://examination-center.onrender.com/api/users/validuser", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

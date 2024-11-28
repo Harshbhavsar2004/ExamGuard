@@ -19,7 +19,7 @@ export default function AdminExamStudent() {
 
             const email = encodeURIComponent(logindata.ValidUserOne.email);
             try {
-                const response = await fetch(`/api/exams/exams?email=${email}`);
+                const response = await fetch(`https://examination-center.onrender.com/api/exams/exams?email=${email}`);
                 if (!response.ok) throw new Error('Failed to fetch exams');
                 const data = await response.json();
                 setExams(data.exams || []);
@@ -38,7 +38,7 @@ export default function AdminExamStudent() {
                 const resultsMap = {};
                 await Promise.all(
                     exams.map(async (exam) => {
-                        const response = await fetch(`/api/results/exam/${exam._id}`);
+                        const response = await fetch(`https://examination-center.onrender.com/api/results/exam/${exam._id}`);
                         if (!response.ok) throw new Error('Failed to fetch results');
                         const data = await response.json();
                         resultsMap[exam._id] = data; // Directly map the data as-is

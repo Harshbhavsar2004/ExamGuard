@@ -29,7 +29,7 @@ const AddExam = () => {
 
         try {
             const token = localStorage.getItem('usersdatatoken');
-            const response = await fetch('/api/exams/exams', {
+            const response = await fetch('https://examination-center.onrender.com/api/exams/exams', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

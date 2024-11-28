@@ -53,7 +53,7 @@ const Profile = ({ onVerification }) => {
 
     const DashboardValid = async () => {
         let token = localStorage.getItem("usersdatatoken");
-        const res = await fetch("/api/users/validuser", {
+        const res = await fetch("https://examination-center.onrender.com/api/users/validuser", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const Profile = ({ onVerification }) => {
             setData(data);
 
             // Fetch user images
-            const imageResponse = await fetch(`/api/users/${data.ValidUserOne._id}/images`, {
+            const imageResponse = await fetch(`https://examination-center.onrender.com/api/users/${data.ValidUserOne._id}/images`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
