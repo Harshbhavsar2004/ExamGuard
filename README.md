@@ -62,7 +62,7 @@
 - Admins can create exams manually or using AI-based question generation.
 - Admins can also view results and monitor student activities during the exam.
 
-![Admin Dashboard](path_to_admin_dashboard_image.png)  <!-- Replace with actual image -->
+![Admin Dashboard](https://github.com/Harshbhavsar2004/ExamGuard/blob/main/public/Screenshot%202024-08-11%20194734.png)  <!-- Replace with actual image -->
 
 ### 3. **Real-Time Proctoring and Cheating Detection**
 - The system uses **Google’s FaceLandmarker API** for real-time facial recognition and gaze-based detection. If the student is found cheating, the system halts the exam.
