@@ -114,4 +114,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Feel free to make adjustments and replace placeholders like `path_to_logo_image.png` with actual paths to your images. Let me know if you need anything else!
+
