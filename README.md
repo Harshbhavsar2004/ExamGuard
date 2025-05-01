@@ -2,7 +2,8 @@
 
 **ExamGuard** is a cutting-edge multi-user online examination platform that uses AI-driven question generation, real-time proctoring, and advanced cheating detection techniques. The system provides real-time facial, voice, and gaze-based monitoring, ensuring secure and transparent exams. It utilizes **Google's FaceLandmarker API** for real-time face recognition, **Solana Blockchain** for secure data storage, and **Socket.IO** for real-time communication, making it a scalable and highly reliable solution for remote assessments.
 
-![ExamGuard Logo](https://github.com/Harshbhavsar2004/ExamGuard/blob/main/public/App_Logo1.png)  <!-- Replace with the actual logo image path -->
+![ExamGuard System Demo](https://github.com/Harshbhavsar2004/ExamGuard/blob/main/public/system-demo.mp4)
+
 
 ## Features
 
