@@ -55,7 +55,7 @@
 ### 1. **User Registration and Login**
 - Students register and log in to their accounts, with exams available based on their course or subject.
 
-![User Registration](path_to_registration_image.png)  <!-- Replace with actual image -->
+![User Registration](https://github.com/Harshbhavsar2004/ExamGuard/blob/main/public/Screenshot%20(56).png)  <!-- Replace with actual image -->
 
 ### 2. **Admin Creates and Manages Exams**
 - Admins can create exams manually or using AI-based question generation.
