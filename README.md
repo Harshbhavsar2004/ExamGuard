@@ -26,9 +26,6 @@
   - Uses **Solana Blockchain** to securely store exam data and halt the exam if cheating is detected.
   - Ensures data integrity and transparency in the examination process.
 
-- **Patented System**:
-  - The exam platform is patented, offering up to **70% higher cheating detection accuracy** and **60% more security** than conventional systems.
-
 ## Installation
 
 1. Clone the repository:
